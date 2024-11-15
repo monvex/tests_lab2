@@ -55,10 +55,8 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(response, f"Информация сохранена в файл: {self.temp_file}.")
 
     def test_load_from_file(self):
-        # Save data to file first
         self.library.save_to_file(self.temp_file)
 
-        # Create a new instance of Library and load data
         new_library = Library()
         response = new_library.load_from_file(self.temp_file)
 
@@ -66,6 +64,7 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(len(new_library.collection), 3)
         self.assertEqual(new_library.collection[0].title, "To Kill a Mockingbird")
         self.assertEqual(new_library.members[0].name, "Alice")
+
 
 
 if __name__ == "__main__":
