@@ -46,7 +46,9 @@ class TestLibrary(unittest.TestCase):
 
     def test_find_irrelevant_book(self):
         book = self.library._find_book("Doom")
-        self.assertEqual(book, None)
+        self.assertIsNone(book)
+
+
 
 
     def test_save_to_file(self):
