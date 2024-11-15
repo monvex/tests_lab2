@@ -22,8 +22,3 @@ class Book:
         if not self.title or not self.author:
             raise ValueError("Название и автор книги должны быть указаны!")
 
-
-if __name__ == "__main__":
-    book = Book()
-
-    print(book.get_info())

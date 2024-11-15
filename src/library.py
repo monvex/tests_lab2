@@ -4,19 +4,21 @@ from src.member import Member
 
 class Library:
     def __init__(self):
-        self.collection = []
+        self.books = []
         self.members = []
 
     def add_book(self, book):
         """Добавляет книгу в библиотеку."""
-        self.collection.append(book)
+        self.books.append(book)
         return f"Книга '{book.title}' добавлена в библиотеку."
 
     def remove_book(self, title):
         """Удаляет книгу из библиотеки по названию."""
         book = self._find_book(title)
         if book:
-            self.collection.remove(book)
+            book.available = False
+            book.borrower = None
+            self.books.remove(book)
             return f"Книга '{title}' удалена из библиотеки."
         return "Книга не найдена."
 
@@ -27,7 +29,7 @@ class Library:
 
     def _find_book(self, title):
         """Protected: Ищет книгу по названию."""
-        for book in self.collection:
+        for book in self.books:
             if book.title == title:
                 return book
         return None
@@ -42,7 +44,7 @@ class Library:
                     "available": book.available,
                     "borrower": book.borrower,
                 }
-                for book in self.collection
+                for book in self.books
             ],
             "members": [
                 {
@@ -61,11 +63,11 @@ class Library:
         with open(filepath, "r") as file:
             data = json.load(file)
 
-        self.collection = [
+        self.books = [
             Book(book["title"], book["author"])
             for book in data["books"]
         ]
-        for book, book_data in zip(self.collection, data["books"]):
+        for book, book_data in zip(self.books, data["books"]):
             book.available = book_data["available"]
             book.borrower = book_data["borrower"]
 
@@ -78,3 +80,4 @@ class Library:
                 self._find_book(title) for title in member_data["borrowed_books"]
             ]
         return f"Информация загружена из: {filepath}."
+

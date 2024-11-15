@@ -26,12 +26,12 @@ class TestLibrary(unittest.TestCase):
     def test_add_book(self):
         new_book = Book("The Great Gatsby", "F. Scott Fitzgerald")
         response = self.library.add_book(new_book)
-        self.assertIn(new_book, self.library.collection)
+        self.assertIn(new_book, self.library.books)
         self.assertEqual(response, "Книга 'The Great Gatsby' добавлена в библиотеку.")
 
     def test_remove_book(self):
         response = self.library.remove_book("To Kill a Mockingbird")
-        self.assertNotIn(self.book, self.library.collection)
+        self.assertNotIn(self.book, self.library.books)
         self.assertEqual(response, "Книга 'To Kill a Mockingbird' удалена из библиотеки.")
 
     def test_add_member(self):
@@ -63,8 +63,8 @@ class TestLibrary(unittest.TestCase):
         response = new_library.load_from_file(self.temp_file)
 
         self.assertEqual(response, f"Информация загружена из: {self.temp_file}.")
-        self.assertEqual(len(new_library.collection), 3)
-        self.assertEqual(new_library.collection[0].title, "To Kill a Mockingbird")
+        self.assertEqual(len(new_library.books), 3)
+        self.assertEqual(new_library.books[0].title, "To Kill a Mockingbird")
         self.assertEqual(new_library.members[0].name, "Alice")
 
 

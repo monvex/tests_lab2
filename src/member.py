@@ -1,9 +1,12 @@
+from src.book import Book
+
+
 class Member:
     def __init__(self, name):
         self.name: str = name
-        self.borrowed_books: list[str] = []
+        self.borrowed_books: list[Book] = []
 
-    def borrow_book(self, book):
+    def borrow_book(self, book: Book):
         """Добавляет книгу к списку заимствованных книг участника."""
         if book.available:
             self.borrowed_books.append(book)
