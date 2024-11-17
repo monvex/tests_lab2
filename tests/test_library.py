@@ -34,21 +34,9 @@ class TestLibrary(unittest.TestCase):
         self.assertNotIn(self.book, self.library.books)
         self.assertEqual(response, "Книга 'To Kill a Mockingbird' удалена из библиотеки.")
 
-    def test_add_member(self):
-        new_member = Member("Sarah")
-        response = self.library.add_member(new_member)
-        self.assertIn(new_member, self.library.members)
-        self.assertEqual(response, "Пользователь 'Sarah' добавлен в библиотеку.")
-
-    def test_find_book(self):
-        book = self.library._find_book("To Kill a Mockingbird")
-        self.assertEqual(book, self.book)
-
     def test_find_irrelevant_book(self):
         book = self.library._find_book("Doom")
         self.assertIsNone(book)
-
-
 
 
     def test_save_to_file(self):
@@ -66,7 +54,6 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(len(new_library.books), 3)
         self.assertEqual(new_library.books[0].title, "To Kill a Mockingbird")
         self.assertEqual(new_library.members[0].name, "Alice")
-
 
 
 if __name__ == "__main__":

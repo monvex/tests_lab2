@@ -25,6 +25,7 @@ class Member:
             return "Этот человек не брал заданную книгу."
 
 
+
     def _validate_data(self):
         """Protected: Проверяет корректность данных пользователя."""
         if not self.name:

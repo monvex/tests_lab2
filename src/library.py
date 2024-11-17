@@ -24,6 +24,8 @@ class Library:
 
     def add_member(self, member):
         """Добавляет участника в библиотеку."""
+        if member.name in self.members:
+            return f"Пользователь с именем'{member.name}' добавлен в библиотеку."
         self.members.append(member)
         return f"Пользователь '{member.name}' добавлен в библиотеку."
 
@@ -32,6 +34,13 @@ class Library:
         for book in self.books:
             if book.title == title:
                 return book
+        return None
+
+    def _find_member(self, name):
+        """Protected: Ищет человека по имени."""
+        for member in self.members:
+            if member.name == name:
+                return member
         return None
 
     def save_to_file(self, filepath):

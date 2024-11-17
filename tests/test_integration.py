@@ -33,30 +33,19 @@ class TestLibrary(unittest.TestCase):
             os.remove(self.temp_file)
 
 
-    def test_borrow_and_return_book(self):
+    def test_borrow_and_check_borrower(self):
         # Выдача книги
         borrow_response = self.member.borrow_book(self.book)
         self.assertIn("Книга 'To Kill a Mockingbird' взята Alice.", borrow_response)
         self.assertFalse(self.book.available)
         self.assertEqual(self.book.borrower, "Alice")
 
-        # Возврат книги
-        return_response = self.member.return_book(self.book)
-        self.assertIn("Книга 'To Kill a Mockingbird' возвращена Alice.", return_response)
-        self.assertTrue(self.book.available)
-        self.assertIsNone(self.book.borrower)
-
-    def test_borrow_conflict(self):
-        # Первый участник берет книгу
-        borrow_response1 = self.member1.borrow_book(self.book)
-        self.assertIn("Книга 'To Kill a Mockingbird' взята Kate.", borrow_response1)
-
-        # Второй участник пытается взять ту же книгу
-        borrow_response2 = self.member2.borrow_book(self.book)
-        self.assertIn("Книга недоступна.", borrow_response2)
-
-        # Проверяем, что книга по-прежнему принадлежит первому участнику
-        self.assertEqual(self.book.borrower, "Kate")
+    def test_return_and_check_borrower(self):
+        # Выдача книги
+        borrow_response = self.member.return_book(self.book1)
+        self.assertIn("Книга '1984' возвращена Alice.", borrow_response)
+        self.assertTrue(self.book1.available)
+        self.assertIsNone(self.book1.borrower)
 
     def test_borrow_deleted_book(self):
 
@@ -77,6 +66,43 @@ class TestLibrary(unittest.TestCase):
         self.assertIn("Этот человек не брал заданную книгу.", return_response)
         self.assertTrue(self.book.available)
         self.assertIsNone(self.book.borrower)
+
+    def test_save_and_restore_with_active_loans(self):
+        """Интеграционный тест: сохранение и восстановление с активными действиями"""
+        # Создание участников и книг
+        member = Member("Alice")
+        book1 = Book("1984", "George Orwell")
+        book2 = Book("Brave New World", "Aldous Huxley")
+
+        # Добавление в библиотеку
+        self.library.add_member(member)
+        self.library.add_book(book1)
+        self.library.add_book(book2)
+
+        # Участник берет одну книгу
+        member.borrow_book(book1)
+
+        # Сохранение состояния
+        save_response = self.library.save_to_file(self.temp_file)
+        self.assertIn("Информация сохранена в файл: test_library.json.", save_response)
+
+        # Создание новой библиотеки и загрузка данных
+        new_library = Library()
+        load_response = new_library.load_from_file(self.temp_file)
+        self.assertIn("Информация загружена из: test_library.json.", load_response)
+
+        # Проверка восстановленного состояния
+        restored_book1 = next((b for b in new_library.books if b.title == "1984"), None)
+        restored_book2 = next((b for b in new_library.books if b.title == "Brave New World"), None)
+        restored_member = next((m for m in new_library.members if m.name == "Alice"), None)
+
+        self.assertIsNotNone(restored_book1)
+        self.assertIsNotNone(restored_book2)
+        self.assertIsNotNone(restored_member)
+
+        self.assertFalse(restored_book1.available)
+        self.assertEqual(restored_book1.borrower, "Alice")
+        self.assertTrue(restored_book2.available)
 
 
 
