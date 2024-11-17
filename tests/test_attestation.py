@@ -4,7 +4,7 @@ from src.library import Library
 from src.book import Book
 from src.member import Member
 
-class TestLibrary(unittest.TestCase):
+class TestAttestation(unittest.TestCase):
     def setUp(self):
         self.library = Library()
         self.book = Book("To Kill a Mockingbird", "Harper Lee")

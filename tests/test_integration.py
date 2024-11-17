@@ -4,7 +4,7 @@ from src.library import Library
 from src.book import Book
 from src.member import Member
 
-class TestLibrary(unittest.TestCase):
+class TestIntegration(unittest.TestCase):
     def setUp(self):
         self.library = Library()
         self.book = Book("To Kill a Mockingbird", "Harper Lee")
@@ -69,18 +69,9 @@ class TestLibrary(unittest.TestCase):
 
     def test_save_and_restore_with_active_loans(self):
         """Интеграционный тест: сохранение и восстановление с активными действиями"""
-        # Создание участников и книг
-        member = Member("Alice")
-        book1 = Book("1984", "George Orwell")
-        book2 = Book("Brave New World", "Aldous Huxley")
-
-        # Добавление в библиотеку
-        self.library.add_member(member)
-        self.library.add_book(book1)
-        self.library.add_book(book2)
 
         # Участник берет одну книгу
-        member.borrow_book(book1)
+        self.member.borrow_book(self.book1)
 
         # Сохранение состояния
         save_response = self.library.save_to_file(self.temp_file)

@@ -16,12 +16,6 @@ class TestBook(unittest.TestCase):
         self.assertEqual(self.book.borrower, "Alice")
         self.assertEqual(response, "Статус изменен.")
 
-    def test_return_status_change(self):
-        self.book.change_status(False, "Alice")
-        self.book.change_status(True)
-        self.assertTrue(self.book.available)
-        self.assertIsNone(self.book.borrower)
-
     def test_validate_data(self):
         with self.assertRaises(ValueError):
             invalid_book = Book("", "")

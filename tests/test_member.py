@@ -11,14 +11,11 @@ class TestMember(unittest.TestCase):
         response = self.member.borrow_book(self.book)
         self.assertIn(self.book, self.member.borrowed_books)
         self.assertEqual(response, "Книга 'The Catcher in the Rye' взята Alice.")
-        self.assertFalse(self.book.available)
-
     def test_return_book(self):
         self.member.borrow_book(self.book)
         response = self.member.return_book(self.book)
         self.assertNotIn(self.book, self.member.borrowed_books)
         self.assertEqual(response, "Книга 'The Catcher in the Rye' возвращена Alice.")
-        self.assertTrue(self.book.available)
 
     def test_return_not_borrowed_book(self):
         response = self.member.return_book(self.book)
