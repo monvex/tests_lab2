@@ -8,23 +8,7 @@ class TestLibrary(unittest.TestCase):
     def setUp(self):
         self.library = Library()
         self.book = Book("To Kill a Mockingbird", "Harper Lee")
-        self.book1 = Book("1984", "George Orwell")
-        self.book2 = Book("Brave New World", "Aldous Huxley")
-        self.member = Member("Alice")
 
-        self.member1 = Member("Kate")
-        self.member2 = Member("Bob")
-
-        self.library.add_book(self.book)
-        self.library.add_book(self.book1)
-        self.library.add_book(self.book2)
-        self.library.add_member(self.member)
-
-        self.temp_file = "test_library.json"
-
-    def tearDown(self):
-        if os.path.exists(self.temp_file):
-            os.remove(self.temp_file)
 
     def test_full_workflow(self):
         """Полный цикл: регистрация участника, добавление книги, выдача и возврат"""
@@ -53,6 +37,9 @@ class TestLibrary(unittest.TestCase):
         self.assertTrue(book.available)
 
     def test_borrow_conflict(self):
+
+        self.member1 = Member("Kate")
+        self.member2 = Member("Bob")
         # Первый участник берет книгу
         borrow_response1 = self.member1.borrow_book(self.book)
         self.assertIn("Книга 'To Kill a Mockingbird' взята Kate.", borrow_response1)
