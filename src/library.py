@@ -90,7 +90,7 @@ class Library:
         for book in self.books:
             # Рассчитываем расстояние Левенштейна для каждого названия книги
             distance = self._levenshtein_distance(title.lower(), book.title.lower())
-            if distance < 5:  # Порог, при котором мы считаем название похожим
+            if distance < 6:  # Порог, при котором мы считаем название похожим
                 suggestions.append(book)
         return suggestions
 

@@ -51,6 +51,35 @@ class TestAttestation(unittest.TestCase):
         # Проверяем, что книга по-прежнему принадлежит первому участнику
         self.assertEqual(self.book.borrower, "Kate")
 
+    def test_user_find_book(self):
+
+        self.library.add_book(Book("The War", "Guy"))
+        self.library.add_book(Book("Wars", "Guy"))
+        self.library.add_book(Book("WarStoke", "Guy"))
+        self.library.add_book(Book("War Stakes", "Guy"))
+
+        user_request1 = "War"
+        suggestion1 = self.library.find_book(user_request1)
+
+        self.assertIn(self.library.find_book("The War"), suggestion1)
+        self.assertIn(self.library.find_book("Wars"), suggestion1)
+        self.assertIn(self.library.find_book("WarStoke"), suggestion1)
+        self.assertEqual(len(suggestion1), 3)
+
+
+        user_request3 = "WarSto"
+        suggestion3 = self.library.find_book(user_request3)
+
+        self.assertIn(self.library.find_book("Wars"), suggestion3)
+        self.assertIn(self.library.find_book("WarStoke"), suggestion3)
+        self.assertIn(self.library.find_book("War Stakes"), suggestion3)
+        self.assertEqual(len(suggestion1), 3)
+
+        user_request4 = "WarStoke"
+        suggestion4 = self.library.find_book(user_request4)
+
+        self.assertEqual(suggestion4, self.library.find_book("WarStoke"))
+
 
 
 
