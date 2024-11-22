@@ -96,6 +96,19 @@ class TestIntegration(unittest.TestCase):
         self.assertTrue(restored_book2.available)
 
 
+    def test_suggest_add_suggest_book(self):
+
+        user_request = "To Kill a Mocking"
+
+        suggestions1 = self.library.suggest_books(user_request)
+
+        self.library.add_book(Book("To Kill a Mocking guy", "Guy"))
+
+        suggestions2 = self.library.suggest_books(user_request)
+
+        self.assertLess(len(suggestions1), len(suggestions2))
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,11 +1,46 @@
 import json
 from src.book import Book
 from src.member import Member
-
 class Library:
     def __init__(self):
         self.books = []
         self.members = []
+
+    def _levenshtein_distance(self, s1: str, s2: str):
+        """
+        Вычисляет расстояние Левенштейна между двумя строками.
+
+        Параметры:
+        - s1 (str): Первая строка.
+        - s2 (str): Вторая строка.
+
+        Возвращает:
+        - int: Расстояние Левенштейна между строками.
+        """
+        # Создаем матрицу размером (len(s1) + 1) x (len(s2) + 1)
+        m, n = len(s1), len(s2)
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+        # Заполняем первую строку и первый столбец
+        for i in range(m + 1):
+            dp[i][0] = i  # Удаление всех символов s1
+        for j in range(n + 1):
+            dp[0][j] = j  # Добавление всех символов s2
+
+        # Заполняем матрицу
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if s1[i - 1] == s2[j - 1]:  # Если символы совпадают, не увеличиваем стоимость
+                    cost = 0
+                else:  # Если символы не совпадают, замена стоит 1
+                    cost = 1
+                dp[i][j] = min(
+                    dp[i - 1][j] + 1,  # Удаление
+                    dp[i][j - 1] + 1,  # Вставка
+                    dp[i - 1][j - 1] + cost  # Замена
+                )
+
+        return dp[m][n]
 
     def add_book(self, book):
         """Добавляет книгу в библиотеку."""
@@ -14,7 +49,7 @@ class Library:
 
     def remove_book(self, title):
         """Удаляет книгу из библиотеки по названию."""
-        book = self._find_book(title)
+        book = self.find_book(title)
         if book:
             book.available = False
             book.borrower = None
@@ -29,11 +64,17 @@ class Library:
         self.members.append(member)
         return f"Пользователь '{member.name}' добавлен в библиотеку."
 
-    def _find_book(self, title):
+    def find_book(self, title):
         """Protected: Ищет книгу по названию."""
         for book in self.books:
             if book.title == title:
                 return book
+
+        suggestions = self.suggest_books(title)
+
+        if (len(suggestions) > 0):
+            return suggestions
+
         return None
 
     def _find_member(self, name):
@@ -42,6 +83,16 @@ class Library:
             if member.name == name:
                 return member
         return None
+
+    def suggest_books(self, title) -> list:
+        """Предлагает похожие книги на основе расстояния Левенштейна."""
+        suggestions = []
+        for book in self.books:
+            # Рассчитываем расстояние Левенштейна для каждого названия книги
+            distance = self._levenshtein_distance(title.lower(), book.title.lower())
+            if distance < 5:  # Порог, при котором мы считаем название похожим
+                suggestions.append(book)
+        return suggestions
 
     def save_to_file(self, filepath):
         """Сохраняет библиотеку и участников в JSON-файл."""
@@ -86,7 +137,7 @@ class Library:
         ]
         for member, member_data in zip(self.members, data["members"]):
             member.borrowed_books = [
-                self._find_book(title) for title in member_data["borrowed_books"]
+                self.find_book(title) for title in member_data["borrowed_books"]
             ]
         return f"Информация загружена из: {filepath}."
 

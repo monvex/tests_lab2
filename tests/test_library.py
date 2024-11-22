@@ -35,7 +35,7 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(response, "Книга 'To Kill a Mockingbird' удалена из библиотеки.")
 
     def test_find_irrelevant_book(self):
-        book = self.library._find_book("Doom")
+        book = self.library.find_book("Doom Bringer")
         self.assertIsNone(book)
 
 
@@ -54,6 +54,21 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(len(new_library.books), 3)
         self.assertEqual(new_library.books[0].title, "To Kill a Mockingbird")
         self.assertEqual(new_library.members[0].name, "Alice")
+
+    def test_levenstein_distance(self):
+        string1 = "The Great Gatsby"
+        string2 = "Thee Greats atsby"
+
+        self.assertEqual(self.library._levenshtein_distance(string1, string2), 3)
+
+    def test_suggest_books(self):
+
+        self.library.add_book(Book("Lucky man", "John"))
+
+        self.library.add_book(Book("Lucky men", "Lee"))
+
+        self.assertEqual(len(self.library.suggest_books("Lucky m")), 2)
+
 
 
 if __name__ == "__main__":
