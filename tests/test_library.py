@@ -69,6 +69,13 @@ class TestLibrary(unittest.TestCase):
 
         self.assertEqual(len(self.library.suggest_books("Lucky m")), 2)
 
+    def test_suggest_empty_title_book(self):
+        result = self.library.suggest_books("")
+        self.assertEqual(len(result), 0)
+
+    def test_find_empty_title_book(self):
+        result = self.library.find_book("")
+        self.assertIsNone(result)
 
 
 if __name__ == "__main__":

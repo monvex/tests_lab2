@@ -84,9 +84,12 @@ class Library:
                 return member
         return None
 
-    def suggest_books(self, title) -> list:
+    def suggest_books(self, title: str) -> list:
         """Предлагает похожие книги на основе расстояния Левенштейна."""
         suggestions = []
+
+        if len(title) == 0:
+            return suggestions
         for book in self.books:
             # Рассчитываем расстояние Левенштейна для каждого названия книги
             distance = self._levenshtein_distance(title.lower(), book.title.lower())
